@@ -33,7 +33,7 @@ def RootTrigger(req: func.HttpRequest) -> func.HttpResponse:
 
 @app.function_name(name="FileUploadToBlob")
 @app.route(route="upload", auth_level=func.AuthLevel.FUNCTION)
-def FileUploadToBlob(req: func.HttpRequest) -> func.HttpResponse:
+def FileUploadToBlob(req: func.HttpRequest, method=['GET, POST']) -> func.HttpResponse:
     logging.info("Started upload file process")
     try:
         file = req.files.get('file')
@@ -42,7 +42,7 @@ def FileUploadToBlob(req: func.HttpRequest) -> func.HttpResponse:
         container = os.environ.get("CONTAINER_NAME")
         connection = os.environ.get('AZURE_STORAGE_CONNECTION_STRING')
 
-        # implement blob account set up
+        # implement blob account set up 
         blob_service = BlobServiceClient.from_connection_string(connection)
         blob_client = blob_service.get_blob_client(container=container,blob=file.filename)
 
