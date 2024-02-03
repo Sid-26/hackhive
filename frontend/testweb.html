@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF Upload with JavaScript</title>
+    <script>
+        function handleFileUpload() {
+            var fileInput = document.getElementById('fileToUpload');
+            var filePath = fileInput.value;
+            var allowedExtensions = /(\.pdf)$/i;
+
+            if (!allowedExtensions.exec(filePath)) {
+                alert('Please upload a file with .pdf extension.');
+                fileInput.value = '';
+                return false;
+            }
+
+            if (fileInput.files && fileInput.files[0]) {
+                alert('Upload Successful');
+                // You can add additional code here to handle the file
+            }
+        }
+    </script>
+</head>
+<body>
+    <form id="uploadForm">
+        <label for="fileToUpload">Select PDF to upload:</label>
+        <input type="file" name="fileToUpload" id="fileToUpload" accept=".pdf">
+        <button type="button" onclick="handleFileUpload()">Upload</button>
+    </form>
+</body>
+</html>
