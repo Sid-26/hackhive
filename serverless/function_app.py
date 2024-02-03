@@ -3,12 +3,12 @@ import datetime
 import json
 import logging
 import os
-from azure.storage import BlobServiceClient, BlobClient
+from azure.storage.blob import BlobServiceClient
 
 app = func.FunctionApp()
 
-# @app.function_name("RootTrigger")
-@app.route(route="{name:alpha}", auth_level=func.AuthLevel.FUNCTION)
+@app.function_name("RootTrigger")
+@app.route(route="hello/{name:alpha}", auth_level=func.AuthLevel.FUNCTION)
 def RootTrigger(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
@@ -31,7 +31,7 @@ def RootTrigger(req: func.HttpRequest) -> func.HttpResponse:
                 status_code=200
         )
 
-# @app.function_name(name="FileUploadToBlob")
+@app.function_name(name="FileUploadToBlob")
 @app.route(route="upload", auth_level=func.AuthLevel.FUNCTION)
 def FileUploadToBlob(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("Started upload file process")
