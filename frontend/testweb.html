@@ -180,11 +180,21 @@
         }
     
         function displayContents(contents) {
-            var csvContent1 = document.getElementById('csvContent1');
-            var csvContent2 = document.getElementById('csvContent2');
+            var allRows = contents.split("\n");
+            var header = allRows[0];
+            var fraudContent = header;
+            var notFraudContent = header;
     
-            csvContent1.textContent = contents; // Display contents in the first box
-            csvContent2.textContent = contents; // Display contents in the second box
+            for(var i=1; i<allRows.length; i++) {
+                if(allRows[i].split(',').pop().trim() === "1.0") {
+                    fraudContent += "\n" + allRows[i];
+                } else {
+                    notFraudContent += "\n" + allRows[i];
+                }
+            }
+    
+            document.getElementById('csvContent1').textContent = notFraudContent; // Display non-fraud contents
+            document.getElementById('csvContent2').textContent = fraudContent; // Display fraud contents
     
             document.getElementById('loadingScreen').classList.remove('active');
             document.getElementById('displayScreen').classList.add('active');
