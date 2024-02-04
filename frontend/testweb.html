@@ -202,6 +202,7 @@
             form.addEventListener('submit', handleUpload);
 
             function handleUpload(e) {
+                navigateToDisplay()
                 e.preventDefault();
 
                 /*const fileInput = document.getElementById('fileToUpload');
@@ -222,12 +223,33 @@
 
                 fetch('http://127.0.0.1:5000/clown')
                     .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
+                    .then((data) => {
+                        array = data.body
+                        for (let index = 0; index < array.length; index++) {
+                            const obj = array[index];
+                            console.log(index)
+                            if (obj.prediction_is_fraud) {
+                                const fraudDiv = document.getElementById("csvContent2");
+                                const pElement = document.createElement('p');
+                                const transId = index + 1;
+                                pElement.textContent = "Transaction " + transId;
+                                
+                                fraudDiv.appendChild(pElement)
+                            } else {
+                                const legitDiv = document.getElementById("csvContent1");
+                                const pElement = document.createElement('p');
+                                const transId = index + 1;
+                                pElement.textContent = "Transaction " + transId;
+                                
+                                legitDiv.appendChild(pElement)
+                            }
+                        }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                     });
+                
+                
             }
         });
     </script>
