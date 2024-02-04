@@ -127,7 +127,7 @@
         <form id="uploadForm" enctype="multipart/form-data">
             <label for="fileToUpload">Select CSV to upload:</label><br>
             <input type="file" name="fileToUpload" id="fileToUpload" accept=".csv"><br>
-            <button type="submit" onclick="(e) => handleUpload(e)">Upload</button>
+            <button type="button" onclick="navigateToDisplay()">Upload</button>
         </form>
     </div>
 
@@ -196,14 +196,24 @@
             document.getElementById('loadingBarInner').style.width = '0%';
         }
 		
-		document.addEventListener('DOMContentLoaded', (event) => {
+		document.addEventListener('DOMContentLoaded', function() {
+            var myElement = document.getElementById('displayScreen');
+    
+        if (myElement) {
+            // Your code to run when the element is loaded
+            console.log('Element with ID "myElement" is loaded!');
+            // Call your specific function here
+            handleUpload();
+            }
+        })
+        // (event) => {
             //const endpoint = "http://localhost:7071/api";
-            const form = document.getElementById('uploadForm');
-            form.addEventListener('submit', handleUpload);
+            // const form = document.getElementById('uploadForm');
+            // form.addEventListener('submit', handleUpload);
 
-            function handleUpload(e) {
-                navigateToDisplay()
-                e.preventDefault();
+            function handleUpload() {
+                // navigateToDisplay()
+                // e.preventDefault();
 
                 /*const fileInput = document.getElementById('fileToUpload');
                 if (!fileInput.files.length) {
@@ -220,38 +230,46 @@
                     method: 'POST',
                     body: formData
                 };*/
-
+                
+             
                 fetch('http://127.0.0.1:5000/clown')
-                    .then(response => response.json())
-                    .then((data) => {
-                        array = data.body
-                        for (let index = 0; index < array.length; index++) {
-                            const obj = array[index];
-                            console.log(index)
-                            if (obj.prediction_is_fraud) {
-                                const fraudDiv = document.getElementById("csvContent2");
-                                const pElement = document.createElement('p');
-                                const transId = index + 1;
-                                pElement.textContent = "Transaction " + transId;
-                                
-                                fraudDiv.appendChild(pElement)
-                            } else {
-                                const legitDiv = document.getElementById("csvContent1");
-                                const pElement = document.createElement('p');
-                                const transId = index + 1;
-                                pElement.textContent = "Transaction " + transId;
-                                
-                                legitDiv.appendChild(pElement)
-                            }
+                .then(response => response.json())
+                .then((data) => {
+                    const array = data.body;
+                    console.log("loaded")
+                    for (let index = 0; index < array.length; index++) {
+                        const obj = array[index];
+                        const transId = index + 1;
+                        const pElement = document.createElement('p');
+                        pElement.textContent = "Transaction " + transId;
+                        const temp = pElement.textContent
+                        // console.log(temp)
+                        if (obj.prediction_is_fraud) {
+                            const fraudDiv = document.getElementById("csvContent2");
+                            pElement.style.color = 'red';  // Optionally, you can style fraud transactions differently
+                            fraudDiv.innerHTML += temp;
+                        } else {
+                            const legitDiv = document.getElementById("csvContent1");
+                            pElement.style.color = 'blue';  // Optionally, you can style legitimate transactions differently
+                            legitDiv.innerHTML += "temp";
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-                
-                
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
             }
-        });
+    //         const isElementLoaded = async id => {
+    //   while ( document.getElementById(id) === null) {
+    //     await new Promise( resolve =>  requestAnimationFrame(resolve) )
+    //   }
+    //   return document.getElementById(id);
+    // };
+    // isElementLoaded('displayScreen').then((id) => {
+    //     // Run code here.
+    //     handleUpload()
+    // });
+        // });
     </script>
 </body>
 </html>
