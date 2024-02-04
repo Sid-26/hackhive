@@ -1,4 +1,5 @@
 from flask import Flask, request, send_from_directory
+from flask_cors import CORS
 import json
 import logging
 from azure.storage.blob import BlobServiceClient
@@ -6,7 +7,7 @@ import csv
 # import requests
 
 app = Flask(__name__)
-
+CORS(app)
 
 @app.route('/')
 def hello():
@@ -56,3 +57,6 @@ def funny():
 
         jay = json.dumps(rows)
         return json.dumps({'statusCode':200,'body':jay})
+
+if __name__ == "__main__":
+    app.run()
