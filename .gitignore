@@ -7,3 +7,4 @@ __azurite_db_table__.json
 __blobstorage__/
 
 .vscode
+local.settings.json
