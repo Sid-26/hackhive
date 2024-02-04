@@ -49,3 +49,6 @@ __azurite_db*__.json
 
 
 local.settings.json
+
+__azurite_db_blob_extent__.json
+__azurite_db_blob__.json
