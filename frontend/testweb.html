@@ -4,29 +4,47 @@
     <meta charset="UTF-8">
     <title>PDF Upload with JavaScript</title>
     <script>
-        function handleFileUpload() {
-            var fileInput = document.getElementById('fileToUpload');
-            var filePath = fileInput.value;
-            var allowedExtensions = /(\.pdf)$/i;
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const endpoint = "http://localhost:7071/api";
+            const form = document.getElementById('uploadForm');
+            form.addEventListener('submit', handleFileUpload);
 
-            if (!allowedExtensions.exec(filePath)) {
-                alert('Please upload a file with .pdf extension.');
-                fileInput.value = '';
-                return false;
-            }
+            function handleFileUpload(e) {
+                e.preventDefault();
 
-            if (fileInput.files && fileInput.files[0]) {
-                alert('Upload Successful');
-                //call blob upload code here
+                const fileInput = document.getElementById('fileToUpload');
+                if (!fileInput.files.length) {
+                    alert('Please select a file to upload');
+                    return;
+                }
+
+                const file = fileInput.files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const url = endpoint + '/upload';
+                const options = {
+                    method: 'POST',
+                    body: formData
+                };
+
+                fetch(url, options)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
             }
-        }
+        });
     </script>
 </head>
 <body>
-    <form id="uploadForm">
+    <form id="uploadForm" enctype="multipart/form-data">
         <label for="fileToUpload">Select PDF to upload:</label>
         <input type="file" name="fileToUpload" id="fileToUpload" accept=".pdf">
-        <button type="button" onclick="handleFileUpload()">Upload</button>
+        <button type="submit">Upload</button>
     </form>
 </body>
 </html>
