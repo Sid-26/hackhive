@@ -1,4 +1,3 @@
-import function_app
 import json
 import csv
 import xml.etree.ElementTree as ET

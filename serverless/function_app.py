@@ -66,3 +66,34 @@ def FileUploadToBlob(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(body=json.dumps({"fileUploaded":False}), status_code=400)
 
     return func.HttpResponse(body=json.dumps({"fileUploaded":True}), status_code=201)
+
+
+@app.function_name(name="FileDownloadFromBlob")
+@app.route(route="download/{filename}", auth_level=func.AuthLevel.FUNCTION)
+def FileDownloadFromBlob(req: func.HttpRequest, filename: str) -> func.HttpResponse:
+    logging.info("Started download file process")
+
+    try:
+        container = "funny"  #os.environ.get("CONTAINER_NAME")
+        connection = "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1"  #os.environ.get('AZURE_STORAGE_CONNECTION_STRING')
+
+        logging.info(f"Connection string: {connection}")
+
+        #set up blob service client
+        blobService = BlobServiceClient.from_connection_string(connection)
+        blobClient = blobService.get_blob_client(container=container, blob=filename)
+
+        logging.info(f"Connected to blob storage with the container name: {container}")
+
+        #download the blob content
+        logging.info("Downloading file")
+        stream = blobClient.download_blob()
+        fileContent = stream.readall()
+
+    except Exception as e:
+        logging.info("Something went wrong with file download")
+        logging.info(e.args)
+        return func.HttpResponse(body = json.dumps({"fileDownloaded": False}), status_code = 400)
+
+    logging.info("File downloaded successfully")
+    return func.HttpResponse(body = fileContent, status_code=200, mimetype="application/octet-stream", headers={'Content-Disposition': f'attachment; filename={filename}'})
